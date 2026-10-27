@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSwap - Exchange Requests</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+}
+
+header {
+    background: #6d28d9;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.container {
+    max-width: 950px;
+    margin: 30px auto;
+    padding: 15px;
+}
+
+.section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #ddd6fe;
+}
+
+h2, h3 {
+    color: #6d28d9;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+button {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+.request-card {
+    background: #f5f3ff;
+    border-left: 5px solid #7c3aed;
+    padding: 18px;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.accept {
+    background: #15803d;
+}
+
+.reject {
+    background: #dc2626;
+}
+
+.status {
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SkillSwap</h1>
+    <p>Student Skill Exchange Requests</p>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="skills.html">Skills</a>
+        <a href="requests.html">Requests</a>
+        <a href="index.html">Home</a>
+    </nav>
+</header>
+
+<div class="container">
+
+<div class="section">
+
+    <h2>Send Exchange Request</h2>
+
+    <form id="requestForm">
+
+        <input type="text" id="sender"
+            placeholder="Your Name" required>
+
+        <input type="text" id="receiver"
+            placeholder="Student You Want to Connect With"
+            required>
+
+        <input type="text" id="teach"
+            placeholder="Skill You Can Teach"
+            required>
+
+        <input type="text" id="learn"
+            placeholder="Skill You Want to Learn"
+            required>
+
+        <button type="submit">
+            Send Request
+        </button>
+
+    </form>
+
+</div>
+
+<div class="section">
+
+    <h2>Exchange Requests</h2>
+
+    <div id="requestList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+// Temporary frontend demo data
+let requests = [];
+
+document.getElementById("requestForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    let request = {
+        sender: document.getElementById("sender").value.trim(),
+        receiver: document.getElementById("receiver").value.trim(),
+        teach: document.getElementById("teach").value.trim(),
+        learn: document.getElementById("learn").value.trim(),
+        status: "Pending"
+    };
+
+    requests.push(request);
+
+    alert("Exchange Request Sent Successfully!");
+
+    this.reset();
+    displayRequests();
+});
+
+function updateStatus(index, status) {
+    requests[index].status = status;
+    displayRequests();
+}
+
+function displayRequests() {
+
+    let list = document.getElementById("requestList");
+    list.innerHTML = "";
+
+    if (requests.length === 0) {
+        list.textContent = "No exchange requests yet.";
+        return;
+    }
+
+    requests.forEach((item, index) => {
+
+        let card = document.createElement("div");
+        card.className = "request-card";
+
+        let heading = document.createElement("h3");
+        heading.textContent = item.sender + " → " + item.receiver;
+        card.appendChild(heading);
+
+        [
+            "Can Teach: " + item.teach,
+            "Wants to Learn: " + item.learn,
+            "Status: " + item.status
+        ].forEach(value => {
+            let p = document.createElement("p");
+            p.textContent = value;
+            card.appendChild(p);
+        });
+
+        if (item.status === "Pending") {
+
+            let accept = document.createElement("button");
+            accept.className = "accept";
+            accept.textContent = "Accept";
+            accept.onclick = () => updateStatus(index, "Accepted");
+
+            let reject = document.createElement("button");
+            reject.className = "reject";
+            reject.textContent = "Reject";
+            reject.onclick = () => updateStatus(index, "Rejected");
+
+            card.append(accept, reject);
+        }
+
+        list.appendChild(card);
+    });
+}
+
+displayRequests();
+
+</script>
+
+</body>
+</html>

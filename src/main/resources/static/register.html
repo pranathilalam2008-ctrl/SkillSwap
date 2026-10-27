@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSwap Registration</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+    margin: 0;
+    padding: 30px 15px;
+}
+
+.container {
+    background: white;
+    max-width: 450px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px #ddd6fe;
+}
+
+h1 {
+    text-align: center;
+    color: #6d28d9;
+}
+
+p {
+    text-align: center;
+    color: #666;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    background: #7c3aed;
+    color: white;
+    padding: 13px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+a {
+    color: #6d28d9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>SkillSwap</h1>
+<p>Create Your Student Account</p>
+
+<form id="registrationForm">
+
+<label>Full Name</label>
+<input type="text" placeholder="Enter full name"
+       required>
+
+<label>Email Address</label>
+<input type="email" placeholder="Enter email"
+       required>
+
+<label>College Name</label>
+<input type="text" placeholder="Enter college name"
+       required>
+
+<label>Department</label>
+<select required>
+    <option value="">Select Department</option>
+    <option>CSE</option>
+    <option>ECE</option>
+    <option>EEE</option>
+    <option>Mechanical</option>
+    <option>Civil</option>
+    <option>Other</option>
+</select>
+
+<label>Skill You Can Teach</label>
+<input type="text" placeholder="Example: Java"
+       required>
+
+<label>Skill You Want to Learn</label>
+<input type="text" placeholder="Example: Python"
+       required>
+
+<label>Password</label>
+<input type="password" minlength="8"
+       placeholder="Minimum 8 characters" required>
+
+<button type="submit">Register</button>
+
+</form>
+
+<p>Already have an account? <a href="login.html">Login</a></p>
+
+</div>
+
+<script>
+document.getElementById("registrationForm")
+.addEventListener("submit", function(event) {
+    event.preventDefault();
+    alert("Registration form submitted! Backend integration is pending.");
+});
+</script>
+
+</body>
+</html>

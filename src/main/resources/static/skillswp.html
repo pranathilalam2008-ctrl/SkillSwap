@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkillSwap - Skills</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+}
+
+header {
+    background: #6d28d9;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    margin-top: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+h2 {
+    color: #6d28d9;
+}
+
+.section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #ddd6fe;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+button {
+    background: #7c3aed;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+.skill-card {
+    background: #f5f3ff;
+    padding: 15px;
+    margin-top: 15px;
+    border-left: 5px solid #7c3aed;
+    border-radius: 8px;
+}
+
+.skill-card h3 {
+    color: #6d28d9;
+}
+
+#skillList {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SkillSwap</h1>
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="skills.html">Skills</a>
+        <a href="requests.html">Requests</a>
+        <a href="index.html">Home</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="section">
+        <h2>Add Your Skill</h2>
+
+        <form id="skillForm">
+
+            <input type="text" id="studentName"
+                placeholder="Student Name" required>
+
+            <input type="text" id="skillName"
+                placeholder="Skill Name (Example: Java)"
+                required>
+
+            <select id="skillLevel" required>
+                <option value="">Select Skill Level</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+            </select>
+
+            <button type="submit">Add Skill</button>
+
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Explore Skills</h2>
+
+        <input type="text" id="searchSkill"
+            placeholder="Search skills..."
+            oninput="displaySkills()">
+
+        <div id="skillList"></div>
+    </div>
+
+</div>
+
+<script>
+
+// Temporary frontend demo data
+let skills = [
+    {
+        name: "Student A",
+        skill: "Java",
+        level: "Intermediate"
+    },
+    {
+        name: "Student B",
+        skill: "Python",
+        level: "Advanced"
+    },
+    {
+        name: "Student C",
+        skill: "Web Development",
+        level: "Beginner"
+    }
+];
+
+// Display skills
+function displaySkills() {
+
+    let search = document.getElementById(
+        "searchSkill"
+    ).value.toLowerCase();
+
+    let list = document.getElementById("skillList");
+
+    list.innerHTML = "";
+
+    let filtered = skills.filter(item =>
+        item.skill.toLowerCase().includes(search)
+    );
+
+    if (filtered.length === 0) {
+        list.textContent = "No skills found.";
+        return;
+    }
+
+    filtered.forEach(item => {
+
+        let card = document.createElement("div");
+        card.className = "skill-card";
+
+        let title = document.createElement("h3");
+        title.textContent = item.skill;
+
+        let student = document.createElement("p");
+        student.textContent = "Student: " + item.name;
+
+        let level = document.createElement("p");
+        level.textContent = "Level: " + item.level;
+
+        card.append(title, student, level);
+        list.appendChild(card);
+
+    });
+}
+
+// Add new skill
+document.getElementById("skillForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    let name = document.getElementById(
+        "studentName"
+    ).value.trim();
+
+    let skill = document.getElementById(
+        "skillName"
+    ).value.trim();
+
+    let level = document.getElementById(
+        "skillLevel"
+    ).value;
+
+    skills.push({
+        name: name,
+        skill: skill,
+        level: level
+    });
+
+    alert("Skill Added Successfully!");
+
+    this.reset();
+
+    displaySkills();
+});
+
+// Display initial skills
+displaySkills();
+
+</script>
+
+</body>
+</html>

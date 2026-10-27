@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkillSwap | Home</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+    color: #333;
+}
+
+/* Navigation Bar */
+
+header {
+    background: #6d28d9;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav a:hover {
+    color: #ddd6fe;
+    text-decoration: underline;
+}
+
+/* Hero Section */
+
+.hero {
+    background: white;
+    text-align: center;
+    padding: 90px 20px;
+}
+
+.hero h1 {
+    color: #6d28d9;
+    font-size: 42px;
+}
+
+.hero h2 {
+    color: #4c1d95;
+}
+
+.hero p {
+    color: #666;
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.btn {
+    display: inline-block;
+    background: #7c3aed;
+    color: white;
+    padding: 13px 28px;
+    margin: 12px 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #5b21b6;
+}
+
+/* General Sections */
+
+.section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.section h2 {
+    color: #6d28d9;
+    font-size: 30px;
+}
+
+.section p {
+    max-width: 750px;
+    margin: 20px auto;
+    color: #555;
+    line-height: 1.8;
+}
+
+/* Feature Cards */
+
+.features {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 35px auto;
+}
+
+.card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #ddd6fe;
+}
+
+.card h3 {
+    color: #6d28d9;
+}
+
+.card p {
+    font-size: 15px;
+}
+
+.card a {
+    display: inline-block;
+    background: #7c3aed;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 7px;
+    text-decoration: none;
+}
+
+.card a:hover {
+    background: #5b21b6;
+}
+
+/* How It Works */
+
+.steps {
+    background: white;
+}
+
+.step-box {
+    background: #f5f3ff;
+    padding: 20px;
+    margin: 15px auto;
+    max-width: 600px;
+    border-left: 5px solid #7c3aed;
+    border-radius: 8px;
+}
+
+.step-box h3 {
+    color: #6d28d9;
+}
+
+/* Footer */
+
+footer {
+    background: #4c1d95;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+/* Mobile Responsive */
+
+@media (max-width: 600px) {
+
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    nav {
+        justify-content: center;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero {
+        padding: 50px 15px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVIGATION BAR -->
+
+<header>
+
+    <div class="logo">SkillSwap</div>
+
+    <nav>
+        <a href="./index.html">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="./register.html">Register</a>
+        <a href="./login.html">Login</a>
+        <a href="./dash.html">Dashboard</a>
+        <a href="./skillswp.html">Skills</a>
+        <a href="./req.html">Requests</a>
+    </nav>
+
+</header>
+
+<!-- HOME SECTION -->
+
+<section class="hero">
+
+    <h1>Welcome to SkillSwap</h1>
+
+    <h2>Learn Together, Grow Together</h2>
+
+    <p>
+        A Peer-to-Peer Student Skill Exchange Platform
+    </p>
+
+    <p>
+        Share your knowledge, discover new skills,
+        and connect with fellow students.
+    </p>
+
+    <a href="./register.html" class="btn">
+        Get Started
+    </a>
+
+    <a href="./login.html" class="btn">
+        Login
+    </a>
+
+</section>
+
+<!-- ABOUT SECTION -->
+
+<section class="section" id="about">
+
+    <h2>About SkillSwap</h2>
+
+    <p>
+        SkillSwap is a student-focused web application
+        designed to encourage collaborative learning.
+
+        Students can share their existing knowledge,
+        learn new skills, and connect with other students.
+
+        Our goal is to make learning interactive,
+        accessible, and enjoyable.
+    </p>
+
+</section>
+
+<!-- FEATURES SECTION -->
+
+<section class="section" id="features">
+
+    <h2>Our Features</h2>
+
+    <div class="features">
+
+        <!-- Registration -->
+
+        <div class="card">
+            <h3>Student Registration</h3>
+
+            <p>
+                Create your student account
+                and join SkillSwap.
+            </p>
+
+            <a href="./register.html">
+                Register
+            </a>
+        </div>
+
+        <!-- Dashboard -->
+
+        <div class="card">
+            <h3>Student Dashboard</h3>
+
+            <p>
+                Access your personal learning
+                dashboard.
+            </p>
+
+            <a href="./dash.html">
+                Open Dashboard
+            </a>
+        </div>
+
+        <!-- Skills -->
+
+        <div class="card">
+            <h3>Explore Skills</h3>
+
+            <p>
+                Discover and share skills
+                with other students.
+            </p>
+
+            <a href="./skillswp.html">
+                Explore Skills
+            </a>
+        </div>
+
+        <!-- Requests -->
+
+        <div class="card">
+            <h3>Skill Exchange</h3>
+
+            <p>
+                Send and manage student
+                skill exchange requests.
+            </p>
+
+            <a href="./req.html">
+                View Requests
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="section steps">
+
+    <h2>How SkillSwap Works</h2>
+
+    <div class="step-box">
+        <h3>Step 1: Register</h3>
+        <p>Create your student account.</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 2: Add Skills</h3>
+        <p>Add skills you can teach.</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 3: Explore Skills</h3>
+        <p>Discover skills shared by students.</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 4: Exchange Skills</h3>
+        <p>Send requests and start learning together.</p>
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <h3>SkillSwap</h3>
+
+    <p>
+        Learn Together | Share Knowledge | Grow Together
+    </p>
+
+    <p>
+        &copy; 2026 SkillSwap. All Rights Reserved.
+    </p>
+
+</footer>
+
+</body>
+</html>
