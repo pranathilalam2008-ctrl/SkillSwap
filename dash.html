@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkillSwap Dashboard</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+}
+
+header {
+    background: #6d28d9;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+header h2 {
+    margin: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    font-size: 15px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 30px 20px;
+}
+
+h1 {
+    color: #6d28d9;
+}
+
+.subtitle {
+    color: #666;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px #ddd6fe;
+}
+
+.card h3 {
+    color: #6d28d9;
+}
+
+.card p {
+    color: #555;
+    line-height: 1.6;
+}
+
+button {
+    background: #7c3aed;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>SkillSwap</h2>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="skills.html">Skills</a>
+        <a href="requests.html">Requests</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h1>Welcome to Your Dashboard!</h1>
+
+    <p class="subtitle">
+        Learn new skills, share your knowledge
+        and connect with students.
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>My Skills</h3>
+            <p>Add the skills you can teach.</p>
+            <button onclick="location.href='skills.html'">
+                Add Skills
+            </button>
+        </div>
+
+        <div class="card">
+            <h3>Explore Skills</h3>
+            <p>Discover skills offered by other students.</p>
+            <button onclick="location.href='skills.html'">
+                Explore
+            </button>
+        </div>
+
+        <div class="card">
+            <h3>Exchange Requests</h3>
+            <p>View and manage your skill exchange requests.</p>
+            <button onclick="location.href='requests.html'">
+                View Requests
+            </button>
+        </div>
+
+        <div class="card">
+            <h3>My Profile</h3>
+            <p>Manage your student information.</p>
+            <button onclick="alert('Profile page coming soon!')">
+                View Profile
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026 SkillSwap | Learn Together, Grow Together
+</footer>
+
+</body>
+</html>
