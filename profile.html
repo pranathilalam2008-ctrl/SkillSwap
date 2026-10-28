@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSwap - My Profile</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+}
+
+header {
+    background: #6d28d9;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav {
+    margin-top: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 12px;
+}
+
+.container {
+    max-width: 650px;
+    width: 90%;
+    margin: 45px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px #ddd6fe;
+}
+
+h2 {
+    text-align: center;
+    color: #6d28d9;
+}
+
+.profile-row {
+    padding: 15px 0;
+    border-bottom: 1px solid #e9d5ff;
+}
+
+.profile-row strong {
+    display: block;
+    color: #6d28d9;
+    margin-bottom: 7px;
+}
+
+.profile-row span {
+    color: #333;
+    overflow-wrap: anywhere;
+}
+
+#message {
+    text-align: center;
+    color: #6d28d9;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SkillSwap</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="skills.html">Skills</a>
+        <a href="requests.html">Requests</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>My Profile</h2>
+
+    <p id="message">Loading profile...</p>
+
+    <div id="profileDetails" hidden>
+        <div class="profile-row">
+            <strong>Full Name</strong>
+            <span id="fullName"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Email Address</strong>
+            <span id="email"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>College Name</strong>
+            <span id="collegeName"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Department</strong>
+            <span id="department"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Skill to Teach</strong>
+            <span id="skillToTeach"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Skill to Learn</strong>
+            <span id="skillToLearn"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+async function loadProfile() {
+    const message = document.getElementById("message");
+
+    try {
+        const response = await fetch("/api/me", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Unable to load profile");
+        }
+
+        const student = await response.json();
+
+        const fields = [
+            "fullName",
+            "email",
+            "collegeName",
+            "department",
+            "skillToTeach",
+            "skillToLearn"
+        ];
+
+        fields.forEach(function(field) {
+            document.getElementById(field).textContent =
+                student[field] ?? "Not provided";
+        });
+
+        message.hidden = true;
+        document.getElementById("profileDetails").hidden = false;
+
+    } catch (error) {
+        message.textContent =
+            "Unable to load profile. Please refresh the page.";
+    }
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>
