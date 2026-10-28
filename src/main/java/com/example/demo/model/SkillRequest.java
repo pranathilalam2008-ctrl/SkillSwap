@@ -21,10 +21,20 @@ public class SkillRequest {
     @ManyToOne(optional = false)
     @JoinColumn(name = "skill_id")
     private Skill skill;
+    @Column(name = "meeting_link", length = 500)
+private String meetingLink;
+
+public String getMeetingLink() {
+    return meetingLink;
+}
+
+public void setMeetingLink(String meetingLink) {
+    this.meetingLink = meetingLink;
+}
 
     @Column(nullable = false)
     private String status = "PENDING";
-
+    
     public SkillRequest() {}
 
     public Long getId() { return id; }

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.Skill;
 import com.example.demo.model.SkillRequest;
 import com.example.demo.model.Student;
+
 import com.example.demo.repository.SkillRepository;
 import com.example.demo.repository.SkillRequestRepository;
 import com.example.demo.repository.StudentRepository;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +43,8 @@ public class SkillRequestController {
             String senderName,
             String receiverName,
             String skillName,
-            String status
+            String status,
+            String meetingLink
     ) {}
 
     private RequestResponse toResponse(SkillRequest request) {
@@ -50,7 +53,8 @@ public class SkillRequestController {
                 request.getSender().getFullName(),
                 request.getReceiver().getFullName(),
                 request.getSkill().getSkillName(),
-                request.getStatus()
+                request.getStatus(),
+                request.getMeetingLink()
         );
     }
 
@@ -67,7 +71,7 @@ public class SkillRequestController {
         return id instanceof Long ? (Long) id : null;
     }
 
-    // Send request
+    // SEND REQUEST
     @PostMapping("/send/{skillId}")
     public ResponseEntity<?> sendRequest(
             @PathVariable Long skillId,
@@ -126,13 +130,14 @@ public class SkillRequestController {
         newRequest.setSkill(skill.get());
         newRequest.setStatus("PENDING");
 
-        SkillRequest saved = requestRepository.save(newRequest);
+        SkillRequest saved =
+                requestRepository.save(newRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(toResponse(saved));
     }
 
-    // Received requests
+    // RECEIVED REQUESTS
     @GetMapping("/received")
     public ResponseEntity<?> receivedRequests(
             HttpServletRequest httpRequest) {
@@ -153,7 +158,7 @@ public class SkillRequestController {
         return ResponseEntity.ok(result);
     }
 
-    // Sent requests
+    // SENT REQUESTS
     @GetMapping("/sent")
     public ResponseEntity<?> sentRequests(
             HttpServletRequest httpRequest) {
@@ -174,7 +179,7 @@ public class SkillRequestController {
         return ResponseEntity.ok(result);
     }
 
-    // Accept or reject a received request
+    // ACCEPT OR REJECT REQUEST
     @PostMapping("/{requestId}/status")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long requestId,
@@ -218,6 +223,83 @@ public class SkillRequestController {
         }
 
         skillRequest.setStatus(status);
+
+        SkillRequest saved =
+                requestRepository.save(skillRequest);
+
+        return ResponseEntity.ok(toResponse(saved));
+    }
+
+    // ADD LEARNING SESSION LINK
+    @PostMapping("/{requestId}/meeting")
+    public ResponseEntity<?> addMeetingLink(
+            @PathVariable Long requestId,
+            @RequestBody Map<String, String> body,
+            HttpServletRequest httpRequest) {
+
+        Long studentId = loggedInStudentId(httpRequest);
+
+        if (studentId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Please login first"));
+        }
+
+        Optional<SkillRequest> found =
+                requestRepository.findById(requestId);
+
+        if (found.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Request not found"));
+        }
+
+        SkillRequest skillRequest = found.get();
+
+        // Only the teacher can add the link
+        if (!skillRequest.getReceiver().getId().equals(studentId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Only the teacher can add a meeting link"));
+        }
+
+        // Request must be accepted first
+        if (!"ACCEPTED".equals(skillRequest.getStatus())) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Accept the request first"));
+        }
+
+        String meetingLink = body.get("meetingLink");
+
+        if (meetingLink == null ||
+                meetingLink.isBlank() ||
+                meetingLink.length() > 500) {
+
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Enter a valid meeting link"));
+        }
+
+        meetingLink = meetingLink.trim();
+
+        try {
+            URI uri = URI.create(meetingLink);
+
+            if (!"https".equalsIgnoreCase(uri.getScheme()) ||
+                    uri.getHost() == null ||
+                    uri.getUserInfo() != null ||
+                    !List.of(
+                            "meet.google.com",
+                            "teams.microsoft.com",
+                            "zoom.us"
+                    ).contains(uri.getHost().toLowerCase())) {
+
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Use a supported HTTPS meeting link"));
+            }
+
+        } catch (IllegalArgumentException error) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Invalid meeting URL"));
+        }
+
+        skillRequest.setMeetingLink(meetingLink);
 
         SkillRequest saved =
                 requestRepository.save(skillRequest);

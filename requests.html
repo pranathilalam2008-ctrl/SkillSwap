@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SkillSwap - Requests</title>
 
 <style>
@@ -72,11 +71,29 @@ button:disabled {
 }
 
 .reject { background: #dc2626; }
-
 .reject:hover { background: #b91c1c; }
 
 .status { font-weight: bold; }
 
+.meeting-input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+.meeting-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #6d28d9;
+    overflow-wrap: anywhere;
+}
+
+.message {
+    font-size: 14px;
+    margin-top: 8px;
+}
 </style>
 </head>
 
@@ -110,7 +127,7 @@ button:disabled {
 
 <script>
 
-// Common function for API calls
+// Get requests from backend
 async function getRequests(type) {
 
     const response = await fetch(
@@ -133,7 +150,7 @@ async function getRequests(type) {
     return await response.json();
 }
 
-// Update received request status
+// Accept or Reject
 async function updateStatus(requestId, status, button) {
 
     button.disabled = true;
@@ -172,7 +189,70 @@ async function updateStatus(requestId, status, button) {
     }
 }
 
-// Create request card safely
+// Teacher saves meeting link
+async function saveMeetingLink(requestId, input, button, message) {
+
+    const meetingLink = input.value.trim();
+
+    if (!meetingLink) {
+        message.textContent = "Please enter a meeting link.";
+        return;
+    }
+
+    button.disabled = true;
+    message.textContent = "Saving meeting link...";
+
+    try {
+        const response = await fetch(
+            "/api/requests/" + requestId + "/meeting",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify({
+                    meetingLink: meetingLink
+                })
+            }
+        );
+
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Unable to save meeting link"
+            );
+        }
+
+        await loadRequests();
+
+    } catch (error) {
+        message.textContent = error.message;
+        button.disabled = false;
+    }
+}
+
+// Display meeting link safely
+function createMeetingLink(url) {
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.textContent = "Join Learning Session";
+    link.className = "meeting-link";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    return link;
+}
+
+// Create each request card
 function createCard(item, type) {
 
     const card = document.createElement("div");
@@ -193,6 +273,7 @@ function createCard(item, type) {
 
     card.append(name, skill, status);
 
+    // Accept / Reject buttons
     if (type === "received" && item.status === "PENDING") {
 
         const acceptButton = document.createElement("button");
@@ -213,10 +294,58 @@ function createCard(item, type) {
         card.append(acceptButton, rejectButton);
     }
 
+    // Meeting feature only for accepted requests
+    if (item.status === "ACCEPTED") {
+
+        if (item.meetingLink) {
+
+            const heading = document.createElement("p");
+            heading.textContent = "Learning Session:";
+
+            card.append(
+                heading,
+                createMeetingLink(item.meetingLink)
+            );
+
+        } else if (type === "received") {
+
+            // Only teacher can enter meeting link
+            const heading = document.createElement("p");
+            heading.textContent = "Add Learning Session Link:";
+
+            const input = document.createElement("input");
+            input.type = "url";
+            input.className = "meeting-input";
+            input.placeholder = "https://meet.google.com/...";
+            input.maxLength = 500;
+
+            const button = document.createElement("button");
+            button.textContent = "Save Meeting Link";
+
+            const message = document.createElement("p");
+            message.className = "message";
+            message.setAttribute("role", "status");
+
+            button.addEventListener("click", function() {
+                saveMeetingLink(item.id, input, button, message);
+            });
+
+            card.append(heading, input, button, message);
+
+        } else {
+
+            const waiting = document.createElement("p");
+            waiting.textContent =
+                "Waiting for teacher to share the learning session link.";
+
+            card.appendChild(waiting);
+        }
+    }
+
     return card;
 }
 
-// Display requests
+// Load received and sent requests
 async function loadRequests() {
 
     const receivedList =
