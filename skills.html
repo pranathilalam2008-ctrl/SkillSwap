@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SkillSwap - Skills</title>
+<title>NEXORA | Skills</title>
 
 <style>
 * { box-sizing: border-box; }
@@ -20,6 +20,16 @@ header {
     color: white;
     padding: 20px;
     text-align: center;
+}
+
+header h1 {
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    margin: 5px 0;
 }
 
 nav { margin-top: 15px; }
@@ -92,13 +102,18 @@ button:disabled {
 <body>
 
 <header>
-    <h1>SkillSwap</h1>
+    <h1>NEXORA</h1>
+
+    <p class="subtitle">
+        A Collaborative Campus Learning Network
+    </p>
+
     <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="skills.html">Skills</a>
-        <a href="requests.html">Requests</a>
-        <a href="profile.html">My Profile</a>
-        <a href="index.html">Home</a>
+        <a href="./dashboard.html">Dashboard</a>
+        <a href="./skills.html?v=21">Skills</a>
+        <a href="./requests.html?v=20">Requests</a>
+        <a href="./profile.html">My Profile</a>
+        <a href="./index.html">Home</a>
     </nav>
 </header>
 
@@ -186,56 +201,56 @@ function displaySkills() {
 
         const level = document.createElement("p");
         level.textContent = "Level: " + item.skillLevel;
-         card.append(title, student, level);
 
-// Send Request button
-const requestButton = document.createElement("button");
-requestButton.textContent = "Send Request";
+        card.append(title, student, level);
 
-requestButton.style.marginTop = "10px";
-
-requestButton.addEventListener("click", async function () {
-
-    requestButton.disabled = true;
-    requestButton.textContent = "Sending...";
-
-    try {
-        const response = await fetch(
-            "/api/requests/send/" + item.id,
-            {
-                method: "POST",
-                credentials: "same-origin"
-            }
-        );
-
-        if (response.status === 401) {
-            window.location.replace("login.html");
-            return;
-        }
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(
-                result.message || "Unable to send request"
-            );
-        }
-
-        requestButton.textContent = "Request Sent";
-        requestButton.disabled = true;
-
-        alert("Skill exchange request sent successfully!");
-
-    } catch (error) {
-
-        alert(error.message);
-
+        // Send Request button
+        const requestButton = document.createElement("button");
         requestButton.textContent = "Send Request";
-        requestButton.disabled = false;
-    }
-});
+        requestButton.style.marginTop = "10px";
 
-card.appendChild(requestButton);
+        requestButton.addEventListener("click", async function () {
+
+            requestButton.disabled = true;
+            requestButton.textContent = "Sending...";
+
+            try {
+                const response = await fetch(
+                    "/api/requests/send/" + item.id,
+                    {
+                        method: "POST",
+                        credentials: "same-origin"
+                    }
+                );
+
+                if (response.status === 401) {
+                    window.location.replace("login.html");
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.message || "Unable to send request"
+                    );
+                }
+
+                requestButton.textContent = "Request Sent";
+                requestButton.disabled = true;
+
+                alert("Learning request sent successfully!");
+
+            } catch (error) {
+
+                alert(error.message);
+
+                requestButton.textContent = "Send Request";
+                requestButton.disabled = false;
+            }
+        });
+
+        card.appendChild(requestButton);
         skillList.appendChild(card);
     });
 }
@@ -302,7 +317,9 @@ form.addEventListener("submit", async function(event) {
         const result = await response.json();
 
         if (!response.ok) {
-            throw new Error(result.message || "Unable to add skill");
+            throw new Error(
+                result.message || "Unable to add skill"
+            );
         }
 
         message.textContent = "Skill added successfully!";
@@ -313,6 +330,7 @@ form.addEventListener("submit", async function(event) {
         await loadSkills();
 
     } catch (error) {
+
         message.textContent = error.message;
         message.style.color = "red";
 

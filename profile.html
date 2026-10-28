@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkillSwap - My Profile</title>
+
+<title>NEXORA | My Profile</title>
 
 <style>
 * {
@@ -14,63 +16,99 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: #f5f3ff;
+    color: #333;
 }
 
 header {
     background: #6d28d9;
     color: white;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
 }
 
 header h1 {
     margin: 0;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 14px;
+    margin-top: 10px;
 }
 
 nav {
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    margin: 0 12px;
+    margin: 10px;
+}
+
+nav a:hover {
+    text-decoration: underline;
 }
 
 .container {
     max-width: 650px;
-    width: 90%;
-    margin: 45px auto;
-    padding: 30px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.profile-card {
     background: white;
+    padding: 30px;
     border-radius: 15px;
     box-shadow: 0 5px 20px #ddd6fe;
 }
 
 h2 {
+    color: #6d28d9;
     text-align: center;
-    color: #6d28d9;
 }
 
-.profile-row {
-    padding: 15px 0;
-    border-bottom: 1px solid #e9d5ff;
-}
-
-.profile-row strong {
-    display: block;
-    color: #6d28d9;
-    margin-bottom: 7px;
-}
-
-.profile-row span {
-    color: #333;
+.detail {
+    background: #f5f3ff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
     overflow-wrap: anywhere;
+}
+
+.detail strong {
+    color: #6d28d9;
+}
+
+button {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+.actions {
+    text-align: center;
 }
 
 #message {
     text-align: center;
     color: #6d28d9;
+}
+
+footer {
+    background: #6d28d9;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    margin-top: 50px;
 }
 </style>
 </head>
@@ -78,70 +116,101 @@ h2 {
 <body>
 
 <header>
-    <h1>SkillSwap</h1>
+
+    <h1>NEXORA</h1>
+
+    <p class="subtitle">
+        A Collaborative Campus Learning Network
+    </p>
+
     <nav>
-        <a href="index.html">Home</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="skills.html">Skills</a>
-        <a href="requests.html">Requests</a>
+        <a href="./dashboard.html">Dashboard</a>
+        <a href="./skills.html?v=21">Skills</a>
+        <a href="./requests.html?v=21">Requests</a>
+        <a href="./profile.html">My Profile</a>
+        <a href="./index.html">Home</a>
     </nav>
+
 </header>
 
 <div class="container">
-    <h2>My Profile</h2>
 
-    <p id="message">Loading profile...</p>
+    <div class="profile-card">
 
-    <div id="profileDetails" hidden>
-        <div class="profile-row">
-            <strong>Full Name</strong>
-            <span id="fullName"></span>
+        <h2>My Profile</h2>
+
+        <p id="message" role="status">
+            Loading student details...
+        </p>
+
+        <div id="profileDetails" hidden>
+
+            <div class="detail">
+                <strong>Full Name:</strong>
+                <span id="fullName"></span>
+            </div>
+
+            <div class="detail">
+                <strong>Email Address:</strong>
+                <span id="email"></span>
+            </div>
+
+            <div class="detail">
+                <strong>College Name:</strong>
+                <span id="collegeName"></span>
+            </div>
+
+            <div class="detail">
+                <strong>Department:</strong>
+                <span id="department"></span>
+            </div>
+
+            <div class="detail">
+                <strong>Skill You Can Teach:</strong>
+                <span id="skillToTeach"></span>
+            </div>
+
+            <div class="detail">
+                <strong>Skill You Want to Learn:</strong>
+                <span id="skillToLearn"></span>
+            </div>
+
         </div>
 
-        <div class="profile-row">
-            <strong>Email Address</strong>
-            <span id="email"></span>
+        <div class="actions">
+            <button onclick="window.location.href='./dashboard.html'">
+                Back to Dashboard
+            </button>
         </div>
 
-        <div class="profile-row">
-            <strong>College Name</strong>
-            <span id="collegeName"></span>
-        </div>
-
-        <div class="profile-row">
-            <strong>Department</strong>
-            <span id="department"></span>
-        </div>
-
-        <div class="profile-row">
-            <strong>Skill to Teach</strong>
-            <span id="skillToTeach"></span>
-        </div>
-
-        <div class="profile-row">
-            <strong>Skill to Learn</strong>
-            <span id="skillToLearn"></span>
-        </div>
     </div>
+
 </div>
 
+<footer>
+    &copy; 2026 NEXORA | Connect, Collaborate, Learn & Grow
+</footer>
+
 <script>
+
 async function loadProfile() {
+
     const message = document.getElementById("message");
 
     try {
+
         const response = await fetch("/api/me", {
             credentials: "same-origin",
             cache: "no-store"
         });
 
         if (response.status === 401) {
-            window.location.replace("login.html");
+            window.location.replace("./login.html");
             return;
         }
 
         if (!response.ok) {
-            throw new Error("Unable to load profile");
+            throw new Error("Unable to load profile.");
         }
 
         const student = await response.json();
@@ -157,19 +226,21 @@ async function loadProfile() {
 
         fields.forEach(function(field) {
             document.getElementById(field).textContent =
-                student[field] ?? "Not provided";
+                student[field] || "Not provided";
         });
 
-        message.hidden = true;
         document.getElementById("profileDetails").hidden = false;
+
+        message.textContent = "";
 
     } catch (error) {
         message.textContent =
-            "Unable to load profile. Please refresh the page.";
+            "Unable to load student details. Please try again.";
     }
 }
 
 loadProfile();
+
 </script>
 
 </body>
