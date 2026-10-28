@@ -88,15 +88,14 @@ public class LoginController {
 
         return studentRepository.findById(studentId)
                 .<ResponseEntity<?>>map(student -> ResponseEntity.ok(
-                        Map.of(
-                            "fullName", student.getFullName(),
-                            "email", student.getEmail(),
-                             "collegeName", student.getCollegeName(),
-                               "department", student.getDepartment(),
-                               "skillToTeach", student.getSkillToTeach(),
-                               "skillToLearn", student.getSkillToLearn(),
-
-                        )
+                          Map.of(
+                             "fullName", student.getFullName(),
+                              "email", student.getEmail(),
+                              "collegeName", student.getCollegeName(),
+                              "department", student.getDepartment(),
+                              "skillToTeach", student.getSkillToTeach(),
+                              "skillToLearn", student.getSkillToLearn()
+)
                 ))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Student not found")));
