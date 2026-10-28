@@ -164,6 +164,7 @@ form.addEventListener("submit", async function(event) {
             message.textContent = "Login successful!";
             message.style.color = "green";
             form.reset();
+            window.location.replace("dashboard.html");
         } else {
             message.textContent =
                 result.message || "Login failed.";
