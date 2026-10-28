@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +33,16 @@ header h2 {
     margin: 0;
 }
 
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 nav a {
     color: white;
     text-decoration: none;
-    margin: 10px;
+    margin: 5px;
     font-size: 15px;
 }
 
@@ -101,22 +108,40 @@ footer {
     padding: 25px;
     color: #666;
 }
+
+@media (max-width: 600px) {
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    nav {
+        justify-content: center;
+    }
+}
 </style>
+
 </head>
 
 <body>
 
+<!-- NAVIGATION BAR -->
+
 <header>
+
     <h2>SkillSwap</h2>
 
     <nav>
-        <a href="index.html">Home</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="skills.html">Skills</a>
-        <a href="requests.html">Requests</a>
-        <a href="login.html">Logout</a>
+        <a href="./index.html">Home</a>
+        <a href="./dash.html">Dashboard</a>
+        <a href="./skillswp.html">Skills</a>
+        <a href="./req.html">Requests</a>
+        <a href="./login.html">Logout</a>
     </nav>
+
 </header>
+
+<!-- DASHBOARD -->
 
 <div class="container">
 
@@ -129,33 +154,57 @@ footer {
 
     <div class="cards">
 
+        <!-- MY SKILLS -->
+
         <div class="card">
             <h3>My Skills</h3>
-            <p>Add the skills you can teach.</p>
-            <button onclick="location.href='skills.html'">
+
+            <p>
+                Add the skills you can teach.
+            </p>
+
+            <button onclick="window.location.href='./skillswp.html'">
                 Add Skills
             </button>
         </div>
 
+        <!-- EXPLORE SKILLS -->
+
         <div class="card">
             <h3>Explore Skills</h3>
-            <p>Discover skills offered by other students.</p>
-            <button onclick="location.href='skills.html'">
+
+            <p>
+                Discover skills offered by other students.
+            </p>
+
+            <button onclick="window.location.href='./skillswp.html'">
                 Explore
             </button>
         </div>
 
+        <!-- REQUESTS -->
+
         <div class="card">
             <h3>Exchange Requests</h3>
-            <p>View and manage your skill exchange requests.</p>
-            <button onclick="location.href='req.html'">
+
+            <p>
+                View and manage your skill exchange requests.
+            </p>
+
+            <button onclick="window.location.href='./req.html'">
                 View Requests
             </button>
         </div>
 
+        <!-- PROFILE -->
+
         <div class="card">
             <h3>My Profile</h3>
-            <p>Manage your student information.</p>
+
+            <p>
+                Manage your student information.
+            </p>
+
             <button onclick="alert('Profile page coming soon!')">
                 View Profile
             </button>
@@ -165,8 +214,10 @@ footer {
 
 </div>
 
+<!-- FOOTER -->
+
 <footer>
-    © 2026 SkillSwap | Learn Together, Grow Together
+    &copy; 2026 SkillSwap | Learn Together, Grow Together
 </footer>
 
 </body>
