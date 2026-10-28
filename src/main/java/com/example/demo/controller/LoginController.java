@@ -91,8 +91,11 @@ public class LoginController {
                         Map.of(
                             "fullName", student.getFullName(),
                             "email", student.getEmail(),
-                            "collegeName", student.getCollegeName(),
-                            "department", student.getDepartment()
+                             "collegeName", student.getCollegeName(),
+                               "department", student.getDepartment(),
+                               "skillToTeach", student.getSkillToTeach(),
+                               "skillToLearn", student.getSkillToLearn(),
+
                         )
                 ))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
