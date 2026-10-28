@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.model.Student;
 import com.example.demo.repository.StudentRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,7 +38,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(
-            @Valid @RequestBody LoginRequest request) {
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest) {
 
         String email = request.email().trim()
                 .toLowerCase(Locale.ROOT);
@@ -56,8 +59,58 @@ public class LoginController {
                     ));
         }
 
+        HttpSession oldSession = httpRequest.getSession(false);
+
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+
+        HttpSession session = httpRequest.getSession(true);
+        httpRequest.changeSessionId();
+
+        session.setAttribute("studentId", student.get().getId());
+        session.setMaxInactiveInterval(30 * 60);
+
         return ResponseEntity.ok(Map.of(
             "message", "Login successful!"
+        ));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> currentStudent(HttpSession session) {
+
+        Long studentId = (Long) session.getAttribute("studentId");
+
+        if (studentId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Please login first"));
+        }
+
+        return studentRepository.findById(studentId)
+                .<ResponseEntity<?>>map(student -> ResponseEntity.ok(
+                        Map.of(
+                            "fullName", student.getFullName(),
+                            "email", student.getEmail(),
+                            "collegeName", student.getCollegeName(),
+                            "department", student.getDepartment()
+                        )
+                ))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Student not found")));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(
+            HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "message", "Logged out successfully"
         ));
     }
 }
