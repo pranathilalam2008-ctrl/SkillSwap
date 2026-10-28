@@ -186,8 +186,56 @@ function displaySkills() {
 
         const level = document.createElement("p");
         level.textContent = "Level: " + item.skillLevel;
+         card.append(title, student, level);
 
-        card.append(title, student, level);
+// Send Request button
+const requestButton = document.createElement("button");
+requestButton.textContent = "Send Request";
+
+requestButton.style.marginTop = "10px";
+
+requestButton.addEventListener("click", async function () {
+
+    requestButton.disabled = true;
+    requestButton.textContent = "Sending...";
+
+    try {
+        const response = await fetch(
+            "/api/requests/send/" + item.id,
+            {
+                method: "POST",
+                credentials: "same-origin"
+            }
+        );
+
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Unable to send request"
+            );
+        }
+
+        requestButton.textContent = "Request Sent";
+        requestButton.disabled = true;
+
+        alert("Skill exchange request sent successfully!");
+
+    } catch (error) {
+
+        alert(error.message);
+
+        requestButton.textContent = "Send Request";
+        requestButton.disabled = false;
+    }
+});
+
+card.appendChild(requestButton);
         skillList.appendChild(card);
     });
 }

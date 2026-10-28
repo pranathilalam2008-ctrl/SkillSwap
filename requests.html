@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkillSwap - Exchange Requests</title>
+
+<title>SkillSwap - Requests</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -19,9 +18,11 @@ body {
 header {
     background: #6d28d9;
     color: white;
-    text-align: center;
     padding: 20px;
+    text-align: center;
 }
+
+nav { margin-top: 15px; }
 
 nav a {
     color: white;
@@ -30,9 +31,9 @@ nav a {
 }
 
 .container {
-    max-width: 950px;
+    max-width: 1000px;
     margin: 30px auto;
-    padding: 15px;
+    padding: 20px;
 }
 
 .section {
@@ -43,51 +44,39 @@ nav a {
     box-shadow: 0 4px 15px #ddd6fe;
 }
 
-h2, h3 {
-    color: #6d28d9;
-}
+h2 { color: #6d28d9; }
 
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 7px;
+.request-card {
+    background: #f5f3ff;
+    padding: 18px;
+    margin-top: 15px;
+    border-left: 5px solid #7c3aed;
+    border-radius: 8px;
 }
 
 button {
     background: #7c3aed;
     color: white;
+    padding: 10px 18px;
+    margin: 5px 8px 5px 0;
     border: none;
-    padding: 11px 20px;
     border-radius: 7px;
     cursor: pointer;
-    margin: 5px;
 }
 
-button:hover {
-    background: #5b21b6;
+button:hover { background: #5b21b6; }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-.request-card {
-    background: #f5f3ff;
-    border-left: 5px solid #7c3aed;
-    padding: 18px;
-    margin-top: 15px;
-    border-radius: 8px;
-}
+.reject { background: #dc2626; }
 
-.accept {
-    background: #15803d;
-}
+.reject:hover { background: #b91c1c; }
 
-.reject {
-    background: #dc2626;
-}
+.status { font-weight: bold; }
 
-.status {
-    font-weight: bold;
-}
 </style>
 </head>
 
@@ -95,137 +84,183 @@ button:hover {
 
 <header>
     <h1>SkillSwap</h1>
-    <p>Student Skill Exchange Requests</p>
 
     <nav>
         <a href="dashboard.html">Dashboard</a>
         <a href="skills.html">Skills</a>
         <a href="requests.html">Requests</a>
+        <a href="profile.html">My Profile</a>
         <a href="index.html">Home</a>
     </nav>
 </header>
 
 <div class="container">
 
-<div class="section">
+    <div class="section">
+        <h2>Received Requests</h2>
+        <div id="receivedList">Loading...</div>
+    </div>
 
-    <h2>Send Exchange Request</h2>
-
-    <form id="requestForm">
-
-        <input type="text" id="sender"
-            placeholder="Your Name" required>
-
-        <input type="text" id="receiver"
-            placeholder="Student You Want to Connect With"
-            required>
-
-        <input type="text" id="teach"
-            placeholder="Skill You Can Teach"
-            required>
-
-        <input type="text" id="learn"
-            placeholder="Skill You Want to Learn"
-            required>
-
-        <button type="submit">
-            Send Request
-        </button>
-
-    </form>
-
-</div>
-
-<div class="section">
-
-    <h2>Exchange Requests</h2>
-
-    <div id="requestList"></div>
-
-</div>
+    <div class="section">
+        <h2>Sent Requests</h2>
+        <div id="sentList">Loading...</div>
+    </div>
 
 </div>
 
 <script>
 
-// Temporary frontend demo data
-let requests = [];
+// Common function for API calls
+async function getRequests(type) {
 
-document.getElementById("requestForm")
-.addEventListener("submit", function(event) {
+    const response = await fetch(
+        "/api/requests/" + type,
+        {
+            credentials: "same-origin",
+            cache: "no-store"
+        }
+    );
 
-    event.preventDefault();
-
-    let request = {
-        sender: document.getElementById("sender").value.trim(),
-        receiver: document.getElementById("receiver").value.trim(),
-        teach: document.getElementById("teach").value.trim(),
-        learn: document.getElementById("learn").value.trim(),
-        status: "Pending"
-    };
-
-    requests.push(request);
-
-    alert("Exchange Request Sent Successfully!");
-
-    this.reset();
-    displayRequests();
-});
-
-function updateStatus(index, status) {
-    requests[index].status = status;
-    displayRequests();
-}
-
-function displayRequests() {
-
-    let list = document.getElementById("requestList");
-    list.innerHTML = "";
-
-    if (requests.length === 0) {
-        list.textContent = "No exchange requests yet.";
-        return;
+    if (response.status === 401) {
+        window.location.replace("login.html");
+        return null;
     }
 
-    requests.forEach((item, index) => {
+    if (!response.ok) {
+        throw new Error("Unable to load requests");
+    }
 
-        let card = document.createElement("div");
-        card.className = "request-card";
-
-        let heading = document.createElement("h3");
-        heading.textContent = item.sender + " â†’ " + item.receiver;
-        card.appendChild(heading);
-
-        [
-            "Can Teach: " + item.teach,
-            "Wants to Learn: " + item.learn,
-            "Status: " + item.status
-        ].forEach(value => {
-            let p = document.createElement("p");
-            p.textContent = value;
-            card.appendChild(p);
-        });
-
-        if (item.status === "Pending") {
-
-            let accept = document.createElement("button");
-            accept.className = "accept";
-            accept.textContent = "Accept";
-            accept.onclick = () => updateStatus(index, "Accepted");
-
-            let reject = document.createElement("button");
-            reject.className = "reject";
-            reject.textContent = "Reject";
-            reject.onclick = () => updateStatus(index, "Rejected");
-
-            card.append(accept, reject);
-        }
-
-        list.appendChild(card);
-    });
+    return await response.json();
 }
 
-displayRequests();
+// Update received request status
+async function updateStatus(requestId, status, button) {
+
+    button.disabled = true;
+
+    try {
+        const response = await fetch(
+            "/api/requests/" + requestId + "/status",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify({ status: status })
+            }
+        );
+
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Unable to update request"
+            );
+        }
+
+        await loadRequests();
+
+    } catch (error) {
+        alert(error.message);
+        button.disabled = false;
+    }
+}
+
+// Create request card safely
+function createCard(item, type) {
+
+    const card = document.createElement("div");
+    card.className = "request-card";
+
+    const name = document.createElement("h3");
+
+    name.textContent = type === "received"
+        ? "From: " + item.senderName
+        : "To: " + item.receiverName;
+
+    const skill = document.createElement("p");
+    skill.textContent = "Skill: " + item.skillName;
+
+    const status = document.createElement("p");
+    status.className = "status";
+    status.textContent = "Status: " + item.status;
+
+    card.append(name, skill, status);
+
+    if (type === "received" && item.status === "PENDING") {
+
+        const acceptButton = document.createElement("button");
+        acceptButton.textContent = "Accept";
+
+        acceptButton.addEventListener("click", function() {
+            updateStatus(item.id, "ACCEPTED", acceptButton);
+        });
+
+        const rejectButton = document.createElement("button");
+        rejectButton.className = "reject";
+        rejectButton.textContent = "Reject";
+
+        rejectButton.addEventListener("click", function() {
+            updateStatus(item.id, "REJECTED", rejectButton);
+        });
+
+        card.append(acceptButton, rejectButton);
+    }
+
+    return card;
+}
+
+// Display requests
+async function loadRequests() {
+
+    const receivedList =
+        document.getElementById("receivedList");
+
+    const sentList =
+        document.getElementById("sentList");
+
+    try {
+        const received = await getRequests("received");
+        const sent = await getRequests("sent");
+
+        if (received === null || sent === null) return;
+
+        receivedList.replaceChildren();
+        sentList.replaceChildren();
+
+        if (received.length === 0) {
+            receivedList.textContent = "No received requests yet.";
+        } else {
+            received.forEach(item => {
+                receivedList.appendChild(
+                    createCard(item, "received")
+                );
+            });
+        }
+
+        if (sent.length === 0) {
+            sentList.textContent = "No sent requests yet.";
+        } else {
+            sent.forEach(item => {
+                sentList.appendChild(
+                    createCard(item, "sent")
+                );
+            });
+        }
+
+    } catch (error) {
+        receivedList.textContent = "Unable to load requests.";
+        sentList.textContent = "Unable to load requests.";
+    }
+}
+
+loadRequests();
 
 </script>
 
