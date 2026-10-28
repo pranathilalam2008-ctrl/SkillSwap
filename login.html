@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SkillSwap Login</title>
+<title>NEXORA | Student Login</title>
 
 <style>
 * {
@@ -33,11 +33,19 @@ body {
 h1 {
     color: #6d28d9;
     text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
 }
 
 p {
     text-align: center;
     color: #666;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #6d28d9;
+    margin-top: 0;
 }
 
 label {
@@ -92,7 +100,11 @@ a {
 
 <div class="container">
 
-<h1>SkillSwap</h1>
+<h1>NEXORA</h1>
+
+<p class="subtitle">
+    A Collaborative Campus Learning Network
+</p>
 
 <p>Welcome Back! Login to Continue</p>
 
@@ -155,6 +167,7 @@ form.addEventListener("submit", async function(event) {
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: "same-origin",
             body: JSON.stringify(loginData)
         });
 
