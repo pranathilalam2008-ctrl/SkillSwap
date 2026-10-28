@@ -7,9 +7,7 @@
 <title>SkillSwap - Skills</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -24,9 +22,7 @@ header {
     text-align: center;
 }
 
-nav {
-    margin-top: 15px;
-}
+nav { margin-top: 15px; }
 
 nav a {
     color: white;
@@ -40,9 +36,7 @@ nav a {
     padding: 20px;
 }
 
-h2 {
-    color: #6d28d9;
-}
+h2 { color: #6d28d9; }
 
 .section {
     background: white;
@@ -69,8 +63,11 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background: #5b21b6;
+button:hover { background: #5b21b6; }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .skill-card {
@@ -81,12 +78,13 @@ button:hover {
     border-radius: 8px;
 }
 
-.skill-card h3 {
-    color: #6d28d9;
-}
+.skill-card h3 { color: #6d28d9; }
 
-#skillList {
-    margin-top: 20px;
+#skillList { margin-top: 20px; }
+
+#message {
+    margin-top: 12px;
+    font-weight: bold;
 }
 </style>
 </head>
@@ -99,6 +97,7 @@ button:hover {
         <a href="dashboard.html">Dashboard</a>
         <a href="skills.html">Skills</a>
         <a href="requests.html">Requests</a>
+        <a href="profile.html">My Profile</a>
         <a href="index.html">Home</a>
     </nav>
 </header>
@@ -110,131 +109,176 @@ button:hover {
 
         <form id="skillForm">
 
-            <input type="text" id="studentName"
-                placeholder="Student Name" required>
-
-            <input type="text" id="skillName"
+            <input
+                type="text"
+                id="skillName"
                 placeholder="Skill Name (Example: Java)"
-                required>
+                maxlength="100"
+                required
+            >
 
             <select id="skillLevel" required>
                 <option value="">Select Skill Level</option>
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Advanced</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
             </select>
 
-            <button type="submit">Add Skill</button>
+            <button type="submit" id="addButton">
+                Add Skill
+            </button>
 
+            <p id="message" role="status"></p>
         </form>
     </div>
 
     <div class="section">
         <h2>Explore Skills</h2>
 
-        <input type="text" id="searchSkill"
+        <input
+            type="text"
+            id="searchSkill"
             placeholder="Search skills..."
-            oninput="displaySkills()">
+        >
 
-        <div id="skillList"></div>
+        <div id="skillList">Loading skills...</div>
     </div>
 
 </div>
 
 <script>
 
-// Temporary frontend demo data
-let skills = [
-    {
-        name: "Student A",
-        skill: "Java",
-        level: "Intermediate"
-    },
-    {
-        name: "Student B",
-        skill: "Python",
-        level: "Advanced"
-    },
-    {
-        name: "Student C",
-        skill: "Web Development",
-        level: "Beginner"
-    }
-];
+let skills = [];
+
+const form = document.getElementById("skillForm");
+const message = document.getElementById("message");
+const addButton = document.getElementById("addButton");
+const skillList = document.getElementById("skillList");
 
 // Display skills
 function displaySkills() {
 
-    let search = document.getElementById(
-        "searchSkill"
-    ).value.toLowerCase();
+    const search = document.getElementById("searchSkill")
+        .value.trim().toLowerCase();
 
-    let list = document.getElementById("skillList");
+    skillList.innerHTML = "";
 
-    list.innerHTML = "";
-
-    let filtered = skills.filter(item =>
-        item.skill.toLowerCase().includes(search)
+    const filtered = skills.filter(item =>
+        item.skillName.toLowerCase().includes(search) ||
+        item.studentName.toLowerCase().includes(search)
     );
 
     if (filtered.length === 0) {
-        list.textContent = "No skills found.";
+        skillList.textContent = "No skills found.";
         return;
     }
 
     filtered.forEach(item => {
 
-        let card = document.createElement("div");
+        const card = document.createElement("div");
         card.className = "skill-card";
 
-        let title = document.createElement("h3");
-        title.textContent = item.skill;
+        const title = document.createElement("h3");
+        title.textContent = item.skillName;
 
-        let student = document.createElement("p");
-        student.textContent = "Student: " + item.name;
+        const student = document.createElement("p");
+        student.textContent = "Student: " + item.studentName;
 
-        let level = document.createElement("p");
-        level.textContent = "Level: " + item.level;
+        const level = document.createElement("p");
+        level.textContent = "Level: " + item.skillLevel;
 
         card.append(title, student, level);
-        list.appendChild(card);
-
+        skillList.appendChild(card);
     });
 }
 
-// Add new skill
-document.getElementById("skillForm")
-.addEventListener("submit", function(event) {
+// Fetch real skills from MySQL through backend
+async function loadSkills() {
+
+    try {
+        const response = await fetch("/api/skills", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Unable to fetch skills");
+        }
+
+        skills = await response.json();
+
+        displaySkills();
+
+    } catch (error) {
+        skillList.textContent =
+            "Unable to load skills. Please try again.";
+    }
+}
+
+// Add skill to MySQL
+form.addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
-    let name = document.getElementById(
-        "studentName"
-    ).value.trim();
+    const skillData = {
+        skillName: document.getElementById("skillName")
+            .value.trim(),
 
-    let skill = document.getElementById(
-        "skillName"
-    ).value.trim();
+        skillLevel: document.getElementById("skillLevel").value
+    };
 
-    let level = document.getElementById(
-        "skillLevel"
-    ).value;
+    message.textContent = "Saving skill...";
+    message.style.color = "#6d28d9";
+    addButton.disabled = true;
 
-    skills.push({
-        name: name,
-        skill: skill,
-        level: level
-    });
+    try {
+        const response = await fetch("/api/skills", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(skillData)
+        });
 
-    alert("Skill Added Successfully!");
+        if (response.status === 401) {
+            window.location.replace("login.html");
+            return;
+        }
 
-    this.reset();
+        const result = await response.json();
 
-    displaySkills();
+        if (!response.ok) {
+            throw new Error(result.message || "Unable to add skill");
+        }
+
+        message.textContent = "Skill added successfully!";
+        message.style.color = "green";
+
+        form.reset();
+
+        await loadSkills();
+
+    } catch (error) {
+        message.textContent = error.message;
+        message.style.color = "red";
+
+    } finally {
+        addButton.disabled = false;
+    }
 });
 
-// Display initial skills
-displaySkills();
+// Search
+document.getElementById("searchSkill")
+    .addEventListener("input", displaySkills);
+
+// Load skills when page opens
+loadSkills();
 
 </script>
 
