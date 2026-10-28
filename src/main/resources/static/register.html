@@ -97,6 +97,7 @@ a {
 <label>Department</label>
 <select required>
     <option value="">Select Department</option>
+    <option>CSM</option>
     <option>CSE</option>
     <option>ECE</option>
     <option>EEE</option>
@@ -127,11 +128,46 @@ a {
 
 <script>
 document.getElementById("registrationForm")
-.addEventListener("submit", function(event) {
+.addEventListener("submit", async function(event) {
+
     event.preventDefault();
-    alert("Registration form submitted! Backend integration is pending.");
+
+    const fields = document.querySelectorAll(
+        "#registrationForm input, #registrationForm select"
+    );
+
+    const student = {
+        fullName: fields[0].value.trim(),
+        email: fields[1].value.trim(),
+        collegeName: fields[2].value.trim(),
+        department: fields[3].value,
+        skillToTeach: fields[4].value.trim(),
+        skillToLearn: fields[5].value.trim(),
+        password: fields[6].value
+    };
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(student)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("Registration successful!");
+            event.target.reset();
+        } else {
+            alert(result.message || "Registration failed.");
+        }
+
+    } catch (error) {
+        alert("Cannot connect to server.");
+    }
 });
 </script>
-
 </body>
 </html>
